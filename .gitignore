@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Hardhat cache and artifacts
+.cache/
+artifacts/
+
+# Environment variables file
+.env
+notes.md
+
+# TypeScript output directory (if using TypeScript)
+dist/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Miscellaneous
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
