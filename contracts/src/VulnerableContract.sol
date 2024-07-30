@@ -6,6 +6,8 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
+// ... rest of the contract remains the same
+
 contract VulnerableContract is Initializable, OwnableUpgradeable, PausableUpgradeable, UUPSUpgradeable {
     mapping(address => uint256) public balances;
 
