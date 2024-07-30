@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "forge-std/Script.sol";
 import "../src/VulnerableContract.sol";
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import "lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract DeployVulnerable is Script {
     function run() external {

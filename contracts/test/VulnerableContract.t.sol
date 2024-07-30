@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import "forge-std/Test.sol";
 import "../src/VulnerableContract.sol";
 import "../src/VulnerableContractV2.sol";
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+import "lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract VulnerableContractTest is Test {
     VulnerableContract public vulnerableContract;
