@@ -7,7 +7,6 @@ artifacts/
 
 # Environment variables file
 .env
-notes.md
 
 # TypeScript output directory (if using TypeScript)
 dist/
