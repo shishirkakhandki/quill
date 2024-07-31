@@ -1,28 +1,30 @@
-# Node modules
+# Ignore Node.js dependencies
 node_modules/
-
-# Hardhat cache and artifacts
-.cache/
-artifacts/
-
-# Environment variables file
+npm-debug.log
+yarn-error.log
 .env
 
-# TypeScript output directory (if using TypeScript)
-dist/
+# Ignore Hardhat specific files
+artifacts/
+cache/
+coverage/
+typechain/
 
-# Logs
-*.log
+# Ignore Hardhat config local files
+hardhat.config.local.js
 
-# OS-specific files
+# Ignore IDE specific files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Ignore OS generated files
 .DS_Store
 Thumbs.db
 
-# IDE-specific files
-.vscode/
-.idea/
-
-# Miscellaneous
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Ignore logs
+logs
+*.log
