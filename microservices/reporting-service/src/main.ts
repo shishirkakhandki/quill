@@ -3,7 +3,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(5000);
-  console.log(`Reporting service listening at http://localhost:5000`);
+
+  const port = process.env.PORT || 5000;
+
+  await app.listen(port);
+  console.log(`Reporting service is running on: ${await app.getUrl()}`);
 }
+
 bootstrap();

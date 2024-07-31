@@ -19,10 +19,13 @@ export class NotificationService {
     this.notificationQueue.process(async (job) => {
       const { address, amount } = job.data;
       try {
-        await this.sendEmail('Exploit Detected', `Detected from address: ${address}, amount: ${amount}`);
+        await this.sendEmail(
+          'Exploit Detected',
+          `Detected from address: ${address}, amount: ${amount}`,
+        );
       } catch (error) {
         console.error('Failed to process job:', error);
-        throw error; // Retry logic in queue will handle this
+        throw error;
       }
     });
   }
@@ -40,11 +43,7 @@ export class NotificationService {
       console.log('Email sent:', subject);
     } catch (error) {
       console.error('Failed to send email:', error);
-      throw error; // Retry logic in queue will handle this
+      throw error;
     }
-  }
-
-  async addToQueue(address: string, amount: number): Promise<void> {
-    await this.notificationQueue.add({ address, amount });
   }
 }

@@ -14,7 +14,7 @@ export class FrontRunningProcessor {
       console.log('Contract paused for address:', address);
     } catch (error) {
       console.error('Failed to process job:', error);
-      throw error; // Retry logic in queue will handle this
+      throw error;
     }
   }
 }

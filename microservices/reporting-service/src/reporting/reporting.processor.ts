@@ -9,6 +9,7 @@ export class ReportingProcessor {
   @Process()
   async handleJob(job: Job) {
     const { address, amount } = job.data;
+    console.log('Processing job with address:', address, 'amount:', amount);
     try {
       await this.reportingService.saveExploit(address, amount);
     } catch (error) {

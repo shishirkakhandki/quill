@@ -1,19 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BullModule } from '@nestjs/bull';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ReportingService } from './reporting.service';
 import { ReportingProcessor } from './reporting.processor';
 import { ExploitSchema } from './reporting.schema';
-import { ConfigModule } from '../common/config.module';
-import { ConfigService } from '../common/config.service';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.mongoUri,
+        uri: configService.get<string>('MONGO_URI'),
       }),
       inject: [ConfigService],
     }),
@@ -22,7 +21,8 @@ import { ConfigService } from '../common/config.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         redis: {
-          host: configService.redisUrl,
+          host: configService.get<string>('REDIS_HOST'),
+          port: parseInt(configService.get<string>('REDIS_PORT'), 10),
         },
       }),
       inject: [ConfigService],
@@ -32,5 +32,6 @@ import { ConfigService } from '../common/config.service';
     }),
   ],
   providers: [ReportingService, ReportingProcessor],
+  exports: [ReportingService],
 })
 export class ReportingModule {}

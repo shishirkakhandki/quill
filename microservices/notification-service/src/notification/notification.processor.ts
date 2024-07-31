@@ -9,6 +9,9 @@ export class NotificationProcessor {
   @Process()
   async handleNotification(job: Job) {
     const { address, amount } = job.data;
-    await this.notificationService.sendEmail('Exploit Detected', `Detected from address: ${address}, amount: ${amount}`);
+    await this.notificationService.sendEmail(
+      'Exploit Detected',
+      `Detected from address: ${address}, amount: ${amount}`,
+    );
   }
 }

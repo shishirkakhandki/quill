@@ -14,8 +14,8 @@ export class WorkflowService {
     try {
       await Promise.all([
         this.notificationQueue.add(data),
-        this.frontRunningQueue.add(data),
         this.reportingQueue.add(data),
+        this.frontRunningQueue.add(data),
       ]);
       console.log('Jobs added to queues');
     } catch (error) {
