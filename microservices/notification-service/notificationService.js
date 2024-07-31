@@ -1,7 +1,7 @@
 const express = require('express');
 const mailgun = require('mailgun-js');
 const axios = require('axios');
-const { Queue } = require('bull');
+const Bull = require('bull');
 require('dotenv').config();
 
 const app = express();
@@ -14,10 +14,10 @@ app.use(express.json());
 const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 
 // Set up message queue
-const queue = new Queue('exploitQueue', process.env.REDIS_URL);
+const queue = new Bull('notificationQueue', process.env.REDIS_URL);
 
 // Function to send email notification
-const sendEmail = (subject, text) => {
+const sendEmail = async (subject, text) => {
     const data = {
         from: process.env.EMAIL,
         to: process.env.NOTIFY_EMAIL,
@@ -25,47 +25,24 @@ const sendEmail = (subject, text) => {
         text,
     };
 
-    mg.messages().send(data, (error, body) => {
-        if (error) {
-            console.error('Failed to send email:', error);
-        } else {
-            console.log('Email sent: ' + body.message);
-        }
-    });
-};
-
-// Function to notify front-running service
-const notifyFrontRunningService = async (address, amount) => {
     try {
-        await axios.post(process.env.FRONT_RUNNING_SERVICE_URL, {
-            address,
-            amount
-        });
-        console.log('Notified front-running service');
+        await mg.messages().send(data);
+        console.log('Email sent:', subject);
     } catch (error) {
-        console.error('Failed to notify front-running service:', error);
+        console.error('Failed to send email:', error);
+        throw error; // Retry logic in queue will handle this
     }
 };
 
-// Function to add task to queue
-const addToQueue = async (address, amount) => {
+// Process jobs from the queue
+queue.process(async (job) => {
+    const { address, amount } = job.data;
     try {
-        await queue.add({ address, amount });
-        console.log('Task added to queue');
+        await sendEmail('Exploit Detected', `Detected from address: ${address}, amount: ${amount}`);
     } catch (error) {
-        console.error('Failed to add task to queue:', error);
+        console.error('Failed to process job:', error);
+        throw error; // Retry logic in queue will handle this
     }
-};
-
-// Listen for exploit detection
-app.post('/exploit-detected', (req, res) => {
-    const { address, amount } = req.body;
-    if (!address || !amount) {
-        return res.status(400).send('Missing address or amount in request body');
-    }
-    sendEmail('Exploit Detected', `Detected from address: ${address}, amount: ${amount}`);
-    addToQueue(address, amount); // Add to queue instead of notifying immediately
-    res.send('Notification sent');
 });
 
 app.listen(port, () => {

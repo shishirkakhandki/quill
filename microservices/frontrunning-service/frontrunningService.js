@@ -1,5 +1,6 @@
 const express = require('express');
 const { ethers } = require('ethers');
+const Bull = require('bull');
 require('dotenv').config();
 
 const app = express();
@@ -18,8 +19,8 @@ const abi = [
 
 const contract = new ethers.Contract(contractAddress, abi, wallet);
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Set up queue
+const queue = new Bull('frontRunningQueue', process.env.REDIS_URL);
 
 // Function to get current gas price with adjustment
 const getAdjustedGasPrice = async () => {
@@ -45,14 +46,15 @@ const pauseContract = async () => {
     }
 };
 
-// Endpoint to handle requests from the queue
-app.post('/pause-contract', async (req, res) => {
+// Process jobs from the queue
+queue.process(async (job) => {
+    const { address, amount } = job.data;
     try {
         await pauseContract();
-        res.send('Contract paused');
+        console.log('Contract paused for address:', address);
     } catch (error) {
-        console.error('Failed to pause the contract:', error);
-        res.status(500).send('Failed to pause the contract');
+        console.error('Failed to process job:', error);
+        throw error; // Retry logic in queue will handle this
     }
 });
 
