@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
 @Injectable()
 export class WorkflowService {
+  private readonly logger = new Logger(WorkflowService.name);
+
   constructor(
     @InjectQueue('notificationQueue') private notificationQueue: Queue,
     @InjectQueue('frontRunningQueue') private frontRunningQueue: Queue,
@@ -19,7 +21,7 @@ export class WorkflowService {
 
     const failures = results.filter((result) => result.status === 'rejected');
     if (failures.length > 0) {
-      console.error('Some jobs failed to be added to queues:', failures);
+      this.logger.error('Some jobs failed to be added to queues:', failures);
     }
 
     return results;
@@ -32,9 +34,9 @@ export class WorkflowService {
   ): Promise<void> {
     try {
       await queue.add(data);
-      console.log(`Job added to ${queueName} queue`);
+      this.logger.log(`Job added to ${queueName} queue`);
     } catch (error) {
-      console.error(`Failed to add job to ${queueName} queue:`, error);
+      this.logger.error(`Failed to add job to ${queueName} queue:`, error);
       throw error;
     }
   }

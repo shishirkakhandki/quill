@@ -1,19 +1,25 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { ReportingService } from './reporting.service';
+import { Logger } from '@nestjs/common';
 
 @Processor('reportingQueue')
 export class ReportingProcessor {
+  private readonly logger = new Logger(ReportingProcessor.name);
+
   constructor(private readonly reportingService: ReportingService) {}
 
   @Process()
   async handleJob(job: Job) {
     const { address, amount } = job.data;
-    console.log('Processing job with address:', address, 'amount:', amount);
+    this.logger.log(
+      `Processing job with address: ${address}, amount: ${amount}`,
+    );
     try {
       await this.reportingService.saveExploit(address, amount);
+      this.logger.log('Job processed successfully');
     } catch (error) {
-      console.error('Failed to process job:', error);
+      this.logger.error('Failed to process job:', error.stack);
       throw error;
     }
   }

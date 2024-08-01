@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ReportingModule } from './reporting/reporting.module';
@@ -10,7 +10,8 @@ import { ReportingModule } from './reporting/reporting.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const mongoUri = configService.get<string>('MONGO_URI');
-        console.log('Connecting to MongoDB with URI:', mongoUri);
+        const logger = new Logger('AppModule');
+        logger.log(`Connecting to MongoDB with URI: ${mongoUri}`);
 
         if (
           !mongoUri.startsWith('mongodb://') &&

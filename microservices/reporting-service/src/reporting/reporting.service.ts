@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { InjectQueue } from '@nestjs/bull';
@@ -7,6 +7,8 @@ import { Exploit } from './reporting.schema';
 
 @Injectable()
 export class ReportingService {
+  private readonly logger = new Logger(ReportingService.name);
+
   constructor(
     @InjectModel('Exploit') private readonly exploitModel: Model<Exploit>,
     @InjectQueue('reportingQueue') private readonly reportingQueue: Queue,
@@ -16,9 +18,9 @@ export class ReportingService {
     const exploit = new this.exploitModel({ address, amount });
     try {
       await exploit.save();
-      console.log('Exploit saved to database');
+      this.logger.log('Exploit saved to database');
     } catch (error) {
-      console.error('Failed to save exploit:', error);
+      this.logger.error('Failed to save exploit:', error.stack);
       throw error;
     }
   }
@@ -26,9 +28,9 @@ export class ReportingService {
   async addJob(address: string, amount: number): Promise<void> {
     try {
       await this.reportingQueue.add({ address, amount });
-      console.log('Job added to queue');
+      this.logger.log('Job added to queue');
     } catch (error) {
-      console.error('Failed to add job to queue:', error);
+      this.logger.error('Failed to add job to queue:', error.stack);
       throw error;
     }
   }

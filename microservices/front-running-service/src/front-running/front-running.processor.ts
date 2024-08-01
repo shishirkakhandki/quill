@@ -1,9 +1,12 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { FrontRunningService } from './front-running.service';
+import { Logger } from '@nestjs/common';
 
 @Processor('frontRunningQueue')
 export class FrontRunningProcessor {
+  private readonly logger = new Logger(FrontRunningProcessor.name);
+
   constructor(private readonly frontRunningService: FrontRunningService) {}
 
   @Process()
@@ -11,9 +14,9 @@ export class FrontRunningProcessor {
     const { address, amount } = job.data;
     try {
       await this.frontRunningService.pauseContract();
-      console.log('Contract paused for successfully')
+      this.logger.log('Contract paused successfully');
     } catch (error) {
-      console.error('Failed to process job:', error);
+      this.logger.error('Failed to process job:', error);
       throw error;
     }
   }

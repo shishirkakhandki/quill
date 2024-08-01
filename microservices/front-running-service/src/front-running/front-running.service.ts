@@ -1,9 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ethers } from 'ethers';
 import { ConfigService } from '../common/config.service';
 
 @Injectable()
 export class FrontRunningService implements OnModuleInit {
+  private readonly logger = new Logger(FrontRunningService.name);
   private provider: ethers.providers.JsonRpcProvider;
   private wallet: ethers.Wallet;
   private contract: ethers.Contract;
@@ -27,19 +28,19 @@ export class FrontRunningService implements OnModuleInit {
       this.wallet,
     );
 
-    console.log('Initialized FrontRunningService with:');
-    console.log(`Provider: ${this.configService.rpcUrl}`);
-    console.log(`Wallet Address: ${this.wallet.address}`);
-    console.log(`Contract Address: ${this.configService.contractAddress}`);
+    this.logger.log('Initialized FrontRunningService with:');
+    this.logger.log(`Provider: ${this.configService.rpcUrl}`);
+    this.logger.log(`Wallet Address: ${this.wallet.address}`);
+    this.logger.log(`Contract Address: ${this.configService.contractAddress}`);
   }
 
   async getAdjustedGasPrice(): Promise<ethers.BigNumber> {
     const gasPrice = await this.provider.getGasPrice();
-    console.log(`Current Gas Price: ${gasPrice.toString()}`);
+    this.logger.log(`Current Gas Price: ${gasPrice.toString()}`);
     const adjustedGasPrice = gasPrice
       .mul(ethers.BigNumber.from(110))
       .div(ethers.BigNumber.from(100));
-    console.log(`Adjusted Gas Price: ${adjustedGasPrice.toString()}`);
+    this.logger.log(`Adjusted Gas Price: ${adjustedGasPrice.toString()}`);
     return adjustedGasPrice;
   }
 
@@ -51,13 +52,13 @@ export class FrontRunningService implements OnModuleInit {
     };
 
     try {
-      console.log('Attempting to pause contract...');
+      this.logger.log('Attempting to pause contract...');
       const txResponse = await this.contract.pause(tx);
-      console.log(`Transaction Hash: ${txResponse.hash}`);
+      this.logger.log(`Transaction Hash: ${txResponse.hash}`);
       await txResponse.wait();
-      console.log('Contract paused successfully');
+      this.logger.log('Contract paused successfully');
     } catch (error) {
-      console.error('Failed to pause the contract:', error);
+      this.logger.error('Failed to pause the contract:', error);
       throw error;
     }
   }

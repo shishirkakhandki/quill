@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as mailgun from 'mailgun-js';
@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NotificationService {
+  private readonly logger = new Logger(NotificationService.name);
   private mg;
 
   constructor(
@@ -13,9 +14,10 @@ export class NotificationService {
     private configService: ConfigService,
   ) {
     this.mg = mailgun({
-      apiKey: this.configService.get('MAILGUN_API_KEY'),
-      domain: this.configService.get('MAILGUN_DOMAIN'),
+      apiKey: this.configService.get<string>('MAILGUN_API_KEY'),
+      domain: this.configService.get<string>('MAILGUN_DOMAIN'),
     });
+
     this.notificationQueue.process(async (job) => {
       const { address, amount } = job.data;
       try {
@@ -24,7 +26,7 @@ export class NotificationService {
           `Detected from address: ${address}, amount: ${amount}`,
         );
       } catch (error) {
-        console.error('Failed to process job:', error);
+        this.logger.error('Failed to process job:', error.stack);
         throw error;
       }
     });
@@ -32,17 +34,17 @@ export class NotificationService {
 
   async sendEmail(subject: string, text: string): Promise<void> {
     const data = {
-      from: this.configService.get('EMAIL'),
-      to: this.configService.get('NOTIFY_EMAIL'),
+      from: this.configService.get<string>('EMAIL'),
+      to: this.configService.get<string>('NOTIFY_EMAIL'),
       subject,
       text,
     };
 
     try {
       await this.mg.messages().send(data);
-      console.log('Email sent:', subject);
+      this.logger.log('Email sent:', subject);
     } catch (error) {
-      console.error('Failed to send email:', error);
+      this.logger.error('Failed to send email:', error.stack);
       throw error;
     }
   }
