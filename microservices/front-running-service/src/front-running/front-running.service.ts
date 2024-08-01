@@ -19,20 +19,28 @@ export class FrontRunningService implements OnModuleInit {
       this.provider,
     );
 
-    const abi = ['function pause() external', 'function unpause() external'];
+    const abi = ['function pause()', 'function unpause()'];
 
     this.contract = new ethers.Contract(
       this.configService.contractAddress,
       abi,
       this.wallet,
     );
+
+    console.log('Initialized FrontRunningService with:');
+    console.log(`Provider: ${this.configService.rpcUrl}`);
+    console.log(`Wallet Address: ${this.wallet.address}`);
+    console.log(`Contract Address: ${this.configService.contractAddress}`);
   }
 
   async getAdjustedGasPrice(): Promise<ethers.BigNumber> {
     const gasPrice = await this.provider.getGasPrice();
-    return gasPrice
+    console.log(`Current Gas Price: ${gasPrice.toString()}`);
+    const adjustedGasPrice = gasPrice
       .mul(ethers.BigNumber.from(110))
       .div(ethers.BigNumber.from(100));
+    console.log(`Adjusted Gas Price: ${adjustedGasPrice.toString()}`);
+    return adjustedGasPrice;
   }
 
   async pauseContract(): Promise<void> {
@@ -43,7 +51,9 @@ export class FrontRunningService implements OnModuleInit {
     };
 
     try {
+      console.log('Attempting to pause contract...');
       const txResponse = await this.contract.pause(tx);
+      console.log(`Transaction Hash: ${txResponse.hash}`);
       await txResponse.wait();
       console.log('Contract paused successfully');
     } catch (error) {

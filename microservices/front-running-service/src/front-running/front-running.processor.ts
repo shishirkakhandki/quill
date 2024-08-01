@@ -11,7 +11,7 @@ export class FrontRunningProcessor {
     const { address, amount } = job.data;
     try {
       await this.frontRunningService.pauseContract();
-      console.log('Contract paused for address:', address);
+      console.log('Contract paused for successfully')
     } catch (error) {
       console.error('Failed to process job:', error);
       throw error;

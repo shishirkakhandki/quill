@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -13,6 +13,7 @@ contract MyVulnerableContract is Initializable, UUPSUpgradeable, OwnableUpgradea
         __Ownable_init(owner);
         __Pausable_init();
         __UUPSUpgradeable_init();
+        transferOwnership(owner);
     }
 
     function deposit() public payable whenNotPaused {
@@ -26,9 +27,16 @@ contract MyVulnerableContract is Initializable, UUPSUpgradeable, OwnableUpgradea
         balances[msg.sender] -= _amount;
     }
 
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
-    // Fallback function to accept ETH deposits
     receive() external payable {
         deposit();
     }
