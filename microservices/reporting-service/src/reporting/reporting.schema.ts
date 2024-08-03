@@ -9,7 +9,7 @@ export const ExploitSchema = new Schema(
     gasUsed: Number,
     contractAddress: String,
     exploitType: String,
-    status: String
+    status: String,
   },
   { collection: 'Exploit' },
 );

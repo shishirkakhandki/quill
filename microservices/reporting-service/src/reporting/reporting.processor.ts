@@ -23,7 +23,7 @@ export class ReportingProcessor {
     } = job.data;
 
     this.logger.log(
-      `Processing job with data: address: ${address}, amount: ${amount}, transactionHash: ${transactionHash}, blockNumber: ${blockNumber}, gasUsed: ${gasUsed}, contractAddress: ${contractAddress}, exploitType: ${exploitType}, status: ${status}`
+      `Processing job with data: address: ${address}, amount: ${amount}, transactionHash: ${transactionHash}, blockNumber: ${blockNumber}, gasUsed: ${gasUsed}, contractAddress: ${contractAddress}, exploitType: ${exploitType}, status: ${status}`,
     );
 
     try {

@@ -8,7 +8,8 @@ export class WorkflowController {
 
   @Post('/exploit-detected')
   async handleExploitDetection(
-    @Body() body: {
+    @Body()
+    body: {
       address: string;
       amount: number;
       transactionHash: string;
