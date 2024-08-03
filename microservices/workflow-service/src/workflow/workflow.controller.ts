@@ -8,18 +8,55 @@ export class WorkflowController {
 
   @Post('/exploit-detected')
   async handleExploitDetection(
-    @Body() body: { address: string; amount: number },
+    @Body() body: {
+      address: string;
+      amount: number;
+      transactionHash: string;
+      blockNumber: number;
+      gasUsed: number;
+      contractAddress: string;
+      exploitType: string;
+      status: string;
+    },
     @Res() res: Response,
   ) {
-    const { address, amount } = body;
-    if (!address || !amount) {
+    const {
+      address,
+      amount,
+      transactionHash,
+      blockNumber,
+      gasUsed,
+      contractAddress,
+      exploitType,
+      status,
+    } = body;
+
+    if (
+      !address ||
+      !amount ||
+      !transactionHash ||
+      !blockNumber ||
+      !gasUsed ||
+      !contractAddress ||
+      !exploitType ||
+      !status
+    ) {
       return res
         .status(HttpStatus.BAD_REQUEST)
-        .send('Missing address or amount in request body');
+        .send('Missing required fields in request body');
     }
 
     try {
-      await this.workflowService.addJobsToQueues({ address, amount });
+      await this.workflowService.addJobsToQueues({
+        address,
+        amount,
+        transactionHash,
+        blockNumber,
+        gasUsed,
+        contractAddress,
+        exploitType,
+        status,
+      });
       res.send('Exploit detected and jobs added to queues');
     } catch (error) {
       console.error('Error in adding jobs to queues:', error);

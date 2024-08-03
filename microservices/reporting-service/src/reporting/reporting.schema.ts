@@ -4,7 +4,12 @@ export const ExploitSchema = new Schema(
   {
     address: String,
     amount: Number,
-    timestamp: { type: Date, default: Date.now },
+    transactionHash: String,
+    blockNumber: Number,
+    gasUsed: Number,
+    contractAddress: String,
+    exploitType: String,
+    status: String
   },
   { collection: 'Exploit' },
 );
@@ -12,5 +17,10 @@ export const ExploitSchema = new Schema(
 export interface Exploit extends Document {
   address: string;
   amount: number;
-  timestamp: Date;
+  transactionHash: string;
+  blockNumber: number;
+  gasUsed: number;
+  contractAddress: string;
+  exploitType: string;
+  status: string;
 }

@@ -7,11 +7,15 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
-contract MyVulnerableContractV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
-    
+contract MyVulnerableContractV1 is
+    Initializable,
+    UUPSUpgradeable,
+    OwnableUpgradeable,
+    PausableUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     mapping(address => uint256) internal _balances;
 
-   
     event Deposit(address indexed account, uint256 amount);
     event Withdrawal(address indexed account, uint256 amount);
 
@@ -20,7 +24,6 @@ contract MyVulnerableContractV1 is Initializable, UUPSUpgradeable, OwnableUpgrad
         _disableInitializers();
     }
 
-   
     function initialize(address initialOwner) public initializer {
         __Ownable_init(initialOwner);
         __Pausable_init();
@@ -29,19 +32,17 @@ contract MyVulnerableContractV1 is Initializable, UUPSUpgradeable, OwnableUpgrad
         transferOwnership(initialOwner);
     }
 
-    
     function deposit() external payable whenNotPaused nonReentrant {
         _balances[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
 
-    
-    function withdraw(uint256 amount) virtual external whenNotPaused {
+    function withdraw(uint256 amount) external virtual whenNotPaused {
         // Checks
         require(_balances[msg.sender] >= amount, "Insufficient balance");
 
         // Interactions (intentionally vulnerable)
-        (bool success, ) = msg.sender.call{value: amount}("");
+        (bool success, ) = msg.sender.call{ value: amount }("");
         require(success, "Transfer failed");
 
         // Effects
@@ -49,18 +50,17 @@ contract MyVulnerableContractV1 is Initializable, UUPSUpgradeable, OwnableUpgrad
         emit Withdrawal(msg.sender, amount);
     }
 
-    
     function pauseContract() external onlyOwner {
         _pause();
     }
 
-    
     function unpauseContract() external onlyOwner {
         _unpause();
     }
 
-    
-    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
 
     receive() external payable {
         _balances[msg.sender] += msg.value;

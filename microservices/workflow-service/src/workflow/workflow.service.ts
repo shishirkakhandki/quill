@@ -12,11 +12,20 @@ export class WorkflowService {
     @InjectQueue('reportingQueue') private reportingQueue: Queue,
   ) {}
 
-  async addJobsToQueues(data: { address: string; amount: number }) {
+  async addJobsToQueues(data: {
+    address: string;
+    amount: number;
+    transactionHash: string;
+    blockNumber: number;
+    gasUsed: number;
+    contractAddress: string;
+    exploitType: string;
+    status: string;
+  }) {
     const results = await Promise.allSettled([
-      this.addToQueue(this.notificationQueue, 'notification', data),
+      // this.addToQueue(this.notificationQueue, 'notification', data),
       this.addToQueue(this.reportingQueue, 'reporting', data),
-      this.addToQueue(this.frontRunningQueue, 'frontRunning', data),
+      // this.addToQueue(this.frontRunningQueue, 'frontRunning', data),
     ]);
 
     const failures = results.filter((result) => result.status === 'rejected');

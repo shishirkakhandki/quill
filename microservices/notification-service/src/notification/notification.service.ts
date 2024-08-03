@@ -17,19 +17,6 @@ export class NotificationService {
       apiKey: this.configService.get<string>('MAILGUN_API_KEY'),
       domain: this.configService.get<string>('MAILGUN_DOMAIN'),
     });
-
-    this.notificationQueue.process(async (job) => {
-      const { address, amount } = job.data;
-      try {
-        await this.sendEmail(
-          'Exploit Detected',
-          `Detected from address: ${address}, amount: ${amount}`,
-        );
-      } catch (error) {
-        this.logger.error('Failed to process job:', error.stack);
-        throw error;
-      }
-    });
   }
 
   async sendEmail(subject: string, text: string): Promise<void> {

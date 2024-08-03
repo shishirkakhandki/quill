@@ -13,7 +13,7 @@ contract MyVulnerableContractV2 is MyVulnerableContractV1 {
         emit WithdrawalLimitSet(_withdrawalLimit);
     }
 
-    function withdraw(uint256 amount) override external whenNotPaused {
+    function withdraw(uint256 amount) external override whenNotPaused {
         // Checks
         require(_balances[msg.sender] >= amount, "Insufficient balance");
 
@@ -21,9 +21,9 @@ contract MyVulnerableContractV2 is MyVulnerableContractV1 {
         _balances[msg.sender] -= amount;
 
         // Interactions (fixed the vulnerability)
-        (bool success, ) = msg.sender.call{value: amount}("");
+        (bool success, ) = msg.sender.call{ value: amount }("");
         require(success, "Transfer failed");
-          
+
         emit Withdrawal(msg.sender, amount);
     }
 }

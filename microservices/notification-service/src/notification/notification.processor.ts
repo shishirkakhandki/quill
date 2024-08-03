@@ -8,10 +8,26 @@ export class NotificationProcessor {
 
   @Process()
   async handleNotification(job: Job) {
-    const { address, amount } = job.data;
-    await this.notificationService.sendEmail(
-      'Exploit Detected',
-      `Detected from address: ${address}, amount: ${amount}`,
-    );
+    const {
+      address,
+      amount,
+      transactionHash,
+      blockNumber,
+      gasUsed,
+      contractAddress,
+      exploitType,
+      status,
+    } = job.data;
+
+    const emailText = `Detected from address: ${address}
+    Amount: ${amount}
+    Transaction Hash: ${transactionHash}
+    Block Number: ${blockNumber}
+    Gas Used: ${gasUsed}
+    Contract Address: ${contractAddress}
+    Exploit Type: ${exploitType}
+    Status: ${status}`;
+
+    await this.notificationService.sendEmail('Exploit Detected', emailText);
   }
 }
