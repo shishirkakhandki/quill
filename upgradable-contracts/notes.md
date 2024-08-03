@@ -1,2 +1,0 @@
-contract address : 0 x498469ca0af948344f6c08bd880ae59daad01c20
-fuji - 0x00c7B1200d91fb3fC6827dD5a95d5a12c3788F6C
