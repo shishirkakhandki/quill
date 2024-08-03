@@ -2,7 +2,7 @@
 
 ## Description
 
-This project demonstrates the implementation of upgradable smart contracts with a known vulnerability, along with a suite of microservices for exploit detection, workflow management, front-running attacks, email notifications, and report storage. The system includes two upgradable contracts, with one containing a vulnerability, and five microservices to manage various aspects of contract interaction and security.
+This project demonstrates the implementation of upgradable smart contracts with a known vulnerability, along with a suite of microservices for exploit detection, workflow management, front-running attacks, email notifications, and report storage. The system includes two upgradable contracts, with one containing a vulnerability, and five microservices to manage various aspects of contract interaction and security. 
 
 ## Table of Contents
 
@@ -123,7 +123,7 @@ Contributions are welcome. Please fork the repository and create a pull request 
 
 ### License
 
-MIT License
+MIT License.
 
 
 
