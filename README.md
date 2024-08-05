@@ -37,7 +37,7 @@ The project is divided into two main directories:
 
 ## Upgradable Contracts
 
-The project includes a set of upgradable smart contracts using the Diamond Proxy Pattern:
+The project includes a set of upgradable smart contracts using the Diamond Proxy Pattern (refer: `https://github.com/mudgen/diamond-2-hardhat`):
 
 ### upgradable-contracts/
 
