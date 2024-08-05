@@ -18,7 +18,6 @@ import { WorkflowService } from './workflow.service';
     }),
     BullModule.registerQueue(
       { name: 'notificationQueue' },
-      { name: 'frontRunningQueue' },
       { name: 'reportingQueue' },
     ),
   ],

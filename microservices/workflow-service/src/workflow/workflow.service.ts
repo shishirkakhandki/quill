@@ -8,7 +8,6 @@ export class WorkflowService {
 
   constructor(
     @InjectQueue('notificationQueue') private notificationQueue: Queue,
-    @InjectQueue('frontRunningQueue') private frontRunningQueue: Queue,
     @InjectQueue('reportingQueue') private reportingQueue: Queue,
   ) {}
 
@@ -23,9 +22,8 @@ export class WorkflowService {
     status: string;
   }) {
     const results = await Promise.allSettled([
-      // this.addToQueue(this.notificationQueue, 'notification', data),
+      this.addToQueue(this.notificationQueue, 'notification', data),
       this.addToQueue(this.reportingQueue, 'reporting', data),
-      // this.addToQueue(this.frontRunningQueue, 'frontRunning', data),
     ]);
 
     const failures = results.filter((result) => result.status === 'rejected');
