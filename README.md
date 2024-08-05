@@ -113,7 +113,7 @@ cd microservices/<service-name>
 yarn start:dev
 ```
 
-#### Deployment
+### Deployment
 
 1. Deploy the smart contracts to Sepolia testnet using the provided scripts.
 2. Update the .env files in each microservice with the deployed contract address.
