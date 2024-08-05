@@ -1,13 +1,17 @@
 {
-  "plugins": ["prettier-plugin-solidity"],
   "printWidth": 80,
-  "tabWidth": 4,
+  "tabWidth": 2,
   "useTabs": false,
   "semi": true,
-  "singleQuote": false,
-  "bracketSpacing": true,
+  "singleQuote": true,
   "trailingComma": "es5",
-  "solidityBracketSpacing": true,
-  "soliditySingleQuote": false,
-  "solidityTabWidth": 4
+  "bracketSpacing": true,
+  "solidity": {
+    "printWidth": 80,
+    "tabWidth": 4,
+    "useTabs": false,
+    "singleQuote": false,
+    "bracketSpacing": true,
+    "explicitTypes": "always"
+  }
 }

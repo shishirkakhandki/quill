@@ -2,7 +2,7 @@
 
 ## Description
 
-This project demonstrates the implementation of upgradable smart contracts with a known vulnerability, along with a suite of microservices for exploit detection, workflow management, front-running attacks, email notifications, and report storage. The system includes two upgradable contracts, with one containing a vulnerability, and five microservices to manage various aspects of contract interaction and security. 
+This project demonstrates the implementation of upgradable smart contracts with a known vulnerability, along with a suite of microservices for exploit detection & front-running attacks, workflow management, email notifications, and report storage. The system includes one upgradable contracts (facets) with Diamond Proxy Pattern and four microservices to manage various aspects of contract interaction and security.
 
 ## Table of Contents
 
@@ -32,23 +32,31 @@ Before you begin, ensure you have the following installed:
 
 The project is divided into two main directories:
 
-- `upgradable-contracts/`: Contains the Solidity smart contracts and Hardhat configuration
-- `microservices/`: Contains the five microservices for various functionalities
+- `upgradable-contracts/`: Contains Diamond Proxy contracts and Hardhat configuration
+- `microservices/`: Contains the four microservices for various functionalities
 
 ## Upgradable Contracts
 
-The project includes two upgradable smart contracts:
+The project includes a set of upgradable smart contracts using the Diamond Proxy Pattern:
 
-1. `MyVulnerableContractV1`: Initial version with a known vulnerability
-2. `MyVulnerableContractV2`: Upgraded version with the vulnerability fixed
+### upgradable-contracts/
+
+1. `DepositFacet.sol`: Facet for deposit functionality
+2. `WithdrawFacet.sol`: Facet for withdraw functionality
+3. `PauseFacet.sol`: Facet for pause functionality
+4. `WithdrawFacetV2.sol`: Upgraded version of the Withdraw Facet
+
+The scripts provided for deploying and upgrading contracts are:
+
+1. `deploy.js`: Script to deploy the initial Diamond Proxy contract with facets
+2. `upgradeWithdrawFacet.js`: Script to upgrade the Withdraw Facet
 
 ## Microservices
 
-1. **Exploit Detection Service**: Monitors the blockchain for potential exploit attempts
+1. **Exploit Detection Service and Front-running Service**: Monitors the blockchain for potential exploits and attempts to front-run suspicious transactions
 2. **Workflow Service**: Manages the overall process flow
 3. **Notification Service**: Sends email notifications using Mailgun
-4. **Front-running Service**: Attempts to front-run suspicious transactions
-5. **Reporting Service**: Stores and manages detailed reports in MongoDB
+4. **Reporting Service**: Stores and manages detailed reports in MongoDB
 
 ## Setup and Installation
 
@@ -58,6 +66,7 @@ The project includes two upgradable smart contracts:
 git clone https://github.com/shishirkakhandki/quill.git
 cd quill
 ```
+
 ### Upgradable Contracts Setup
 
 ```bash
@@ -66,6 +75,7 @@ cp .env.example .env
 # Edit .env with your configuration
 yarn install
 ```
+
 ### Microservices Setup
 
 For each microservice in the microservices/ directory:
@@ -81,18 +91,19 @@ yarn install
 
 #### Deploying Contracts
 
-To deploy the initial vulnerable contract:
+To deploy the initial Diamond Proxy contract with facets:
 
 ```bash
 cd upgradable-contracts
-npx hardhat run scripts/deploy_v1.js --network sepolia
+npx hardhat run scripts/deploy.js --network sepolia
 ```
 
-To upgrade the contract:
+To upgrade the Withdraw Facet and verify the upgrade:
 
 ```bash
-npx hardhat run scripts/upgrade_to_v2.js --network sepolia
+npx hardhat run scripts/upgradeWithdrawFacet.js --network sepolia
 ```
+
 #### Running Microservices
 
 For each microservice:
@@ -102,20 +113,11 @@ cd microservices/<service-name>
 yarn start:dev
 ```
 
-#### Testing
-
-To run tests for the smart contracts:
-
-```bash
-cd upgradable-contracts
-npx hardhat test
-```
-
 #### Deployment
 
 1. Deploy the smart contracts to Sepolia testnet using the provided scripts.
 2. Update the .env files in each microservice with the deployed contract address.
-3. Start each microservice using yarn start:dev.
+3. Start each microservice using `yarn start:dev`
 
 ### Contributing
 
@@ -124,6 +126,7 @@ Contributions are welcome. Please fork the repository and create a pull request 
 ### License
 
 MIT License
+
 
 
 
