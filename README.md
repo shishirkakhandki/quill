@@ -112,6 +112,13 @@ For each microservice:
 cd microservices/<service-name>
 yarn start:dev
 ```
+### Testing
+To run tests for the smart contracts:
+
+```bash
+cd upgradable-contracts
+npx hardhat test
+```
 
 ### Deployment
 
